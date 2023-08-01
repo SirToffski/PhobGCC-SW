@@ -191,6 +191,10 @@ struct ControlConfig{
 	const int snapbackDefault;
 	const int snapbackFactoryAX;
 	const int snapbackFactoryAY;
+	const int snapbackSoftAX;
+	const int snapbackSoftAY;
+	const int snapbackSoftCX;
+	const int snapbackSoftCY;
 	int axSmoothing;
 	int aySmoothing;
 	int cxSmoothing;
@@ -211,6 +215,10 @@ struct ControlConfig{
 	const int waveshapingFactoryAY;
 	const int waveshapingFactoryCX;
 	const int waveshapingFactoryCY;
+	const int waveshapingSoftAX;
+	const int waveshapingSoftAY;
+	const int waveshapingSoftCX;
+	const int waveshapingSoftCY;
 	int astickCardinalSnapping;
 	int cstickCardinalSnapping;
 	const int cardinalSnappingMin;
@@ -221,6 +229,7 @@ struct ControlConfig{
 	const int analogScalerMin;
 	const int analogScalerMax;
 	const int analogScalerDefault;
+	const int analogCScalerDefault;
 	int tournamentToggle;
 	const int tournamentToggleMin;
 	const int tournamentToggleMax;

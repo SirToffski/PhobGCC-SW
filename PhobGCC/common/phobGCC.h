@@ -16,9 +16,9 @@ using std::max;
 //#include "../teensy/Phob1_1Teensy3_2DiodeShort.h"// For PhobGCC board 1.1 with Teensy 3.2 and the diode shorted
 //#include "../teensy/Phob1_1Teensy4_0.h"          // For PhobGCC board 1.1 with Teensy 4.0
 //#include "../teensy/Phob1_1Teensy4_0DiodeShort.h"// For PhobGCC board 1.1 with Teensy 4.0 and the diode shorted
-//#include "../teensy/Phob1_2Teensy4_0.h"          // For PhobGCC board 1.2.x with Teensy 4.0
+#include "../teensy/Phob1_2Teensy4_0.h"          // For PhobGCC board 1.2.x with Teensy 4.0
 //#include "../rp2040/include/PicoProtoboard.h"    // For a protoboard with a Pico on it, used for developing for the RP2040
-#include "../rp2040/include/Phob2_0.h"           // For PhobGCC Board 2.0 with RP2040
+//#include "../rp2040/include/Phob2_0.h"           // For PhobGCC Board 2.0 with RP2040
 
 #include "structsAndEnums.h"
 #include "variables.h"
@@ -40,7 +40,7 @@ ControlConfig _controls{
 	.rConfig = 0,
 	.triggerConfigMin = 0,
 	.triggerConfigMax = 6,
-	.triggerDefault = 0,
+	.triggerDefault = 1,
 	.lTriggerOffset = 49,
 	.rTriggerOffset = 49,
 	.triggerMin = 49,
@@ -52,8 +52,8 @@ ControlConfig _controls{
 	.rumble = 9,
 	.rumbleMin = 0,
 	.rumbleMax = 11,
-	.rumbleDefault = 9,//5 is the max for 3v cell rumble, 9 is for oem-feeling normal rumble motors
-	.rumbleFactory = 9,
+	.rumbleDefault = 0,//5 is the max for 3v cell rumble, 9 is for oem-feeling normal rumble motors
+	.rumbleFactory = 0,
 	.safeMode = true,
 	.autoInit = false,
 	.lTrigInitial = 0,
@@ -65,6 +65,8 @@ ControlConfig _controls{
 	.snapbackDefault = 4,
 	.snapbackFactoryAX = 4,
 	.snapbackFactoryAY = 4,
+	.snapbackSoftAX = 4,
+	.snapbackSoftAY = 7,
 	.axSmoothing = 0,
 	.aySmoothing = 0,
 	.cxSmoothing = 0,
@@ -85,6 +87,10 @@ ControlConfig _controls{
 	.waveshapingFactoryAY = 0,
 	.waveshapingFactoryCX = 0,
 	.waveshapingFactoryCY = 0,
+	.waveshapingSoftAX = 0,
+	.waveshapingSoftAY = 0,
+	.waveshapingSoftCX = 0,
+	.waveshapingSoftCY = 4,
 	.astickCardinalSnapping = 6,
 	.cstickCardinalSnapping = 6,
 	.cardinalSnappingMin = -1,
@@ -94,7 +100,8 @@ ControlConfig _controls{
 	.cstickAnalogScaler = 100,
 	.analogScalerMin = 82,
 	.analogScalerMax = 125,
-	.analogScalerDefault = 100,
+	.analogScalerDefault = 107,
+	.analogCScalerDefault = 118,
 	.tournamentToggle = 0,
 	.tournamentToggleMin = 0,
 	.tournamentToggleMax = 5,
@@ -1346,8 +1353,8 @@ void resetDefaults(HardReset reset, ControlConfig &controls, FilterGains &gains,
 		controls.xSnapback = controls.snapbackFactoryAX;
 		controls.ySnapback = controls.snapbackFactoryAY;
 	} else {
-		controls.xSnapback = controls.snapbackDefault;
-		controls.ySnapback = controls.snapbackDefault;
+		controls.xSnapback = controls.snapbackSoftAX;
+		controls.ySnapback = controls.snapbackSoftAY;
 	}
 	setXSnapbackSetting(controls.xSnapback);
 	setYSnapbackSetting(controls.ySnapback);
@@ -1355,8 +1362,8 @@ void resetDefaults(HardReset reset, ControlConfig &controls, FilterGains &gains,
 	if(reset == FACTORY){
 		controls.axSmoothing = controls.smoothingFactoryAX;
 		controls.aySmoothing = controls.smoothingFactoryAY;
-		controls.cxSmoothing = controls.snapbackFactoryCX;
-		controls.cySmoothing = controls.snapbackFactoryCY;
+		controls.cxSmoothing = controls.smoothingFactoryAX;
+		controls.cySmoothing = controls.smoothingFactoryAY;
 	} else {
 		controls.axSmoothing = controls.smoothingMin;
 		controls.aySmoothing = controls.smoothingMin;
@@ -1376,10 +1383,10 @@ void resetDefaults(HardReset reset, ControlConfig &controls, FilterGains &gains,
 		controls.cxWaveshaping = controls.waveshapingFactoryCX;
 		controls.cyWaveshaping = controls.waveshapingFactoryCY;
 	} else {
-		controls.axWaveshaping = controls.waveshapingMin;
-		controls.ayWaveshaping = controls.waveshapingMin;
-		controls.cxWaveshaping = controls.waveshapingMin;
-		controls.cyWaveshaping = controls.waveshapingMin;
+		controls.axWaveshaping = controls.waveshapingSoftAX;
+		controls.ayWaveshaping = controls.waveshapingSoftAY;
+		controls.cxWaveshaping = controls.waveshapingSoftCX;
+		controls.cyWaveshaping = controls.waveshapingSoftCY;
 	}
 	setWaveshapingSetting(controls.waveshapingMin, ASTICK, XAXIS);
 	setWaveshapingSetting(controls.waveshapingMin, ASTICK, YAXIS);
@@ -1411,7 +1418,7 @@ void resetDefaults(HardReset reset, ControlConfig &controls, FilterGains &gains,
 
 	//Analog scaling
 	controls.astickAnalogScaler = controls.analogScalerDefault;
-	controls.cstickAnalogScaler = controls.analogScalerDefault;
+	controls.cstickAnalogScaler = controls.analogCScalerDefault;
 	setAnalogScalerSetting(controls.astickAnalogScaler, ASTICK);
 	setAnalogScalerSetting(controls.cstickAnalogScaler, CSTICK);
 
